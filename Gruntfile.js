@@ -21,25 +21,38 @@ module.exports = function(grunt) {
 	      build: ['Gruntfile.js', 'src/**/*.js']
 	  },
 
-    // configure uglify to minify js files -------------------------------------
-    uglify: {
-      options: {
-        banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'
-      },
-      build: {
-        files: {
-          'dist/js/magic.min.js': ['src/js/magic.js', 'src/js/magic2.js']
-        }
-      }
-    },
+  // configure uglify to minify js files ------------------------------------- 
+  uglify: { 
+  	options: { 
+  		banner: '/\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n/\n' 
+  	}, 
+  	dev: { 
+  		files: { 'dist/js/magic.min.js': ['src/js/magic.js', 'src/js/magic2.js'] } 
+  	}, 
+  	production: { 
+  		files: { 'dist/js/magic.min.js': 'src/**/*.js' } 
+  	} 
+  },
 
     // compile less stylesheets to css -----------------------------------------
     less: {
-      build: {
-        files: {
-          'dist/css/pretty.css': 'src/css/pretty.less'
-        }
-      }
+    	build: {
+    		files: {
+    			'dist/css/pretty.css': 'src/css/pretty.less'
+    		}
+    	}
+    },
+
+    // configure cssmin to minify css files ------------------------------------
+    cssmin: {
+    	options: {
+    		banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'
+    	},
+    	build: {
+    		files: {
+    			'dist/css/style.min.css': 'src/css/style.css'
+    		}
+    	}
     }
 
 
@@ -56,4 +69,19 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
+ // ========= // CREATE TASKS =========
+
+  // this default task will go through all configuration (dev and production) in each task 
+  grunt.registerTask('default', ['jshint', 'uglify', 'cssmin', 'less']);
+
+  // this task will only run the dev configuration 
+  grunt.registerTask('dev', ['jshint:dev', 'uglify:dev', 'cssmin:dev', 'less:dev']);
+
+  // only run production configuration 
+  grunt.registerTask('production', ['jshint:production', 'uglify:production', 'cssmin:production', 'less:production']);
+
+
 };
+
+
+
