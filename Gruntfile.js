@@ -24,7 +24,7 @@ module.exports = function(grunt) {
   // configure uglify to minify js files ------------------------------------- 
   uglify: { 
   	options: { 
-  		banner: '/\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n/\n' 
+  		banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n' 
   	}, 
   	dev: { 
   		files: { 'dist/js/magic.min.js': ['src/js/magic.js', 'src/js/magic2.js'] } 
@@ -53,7 +53,20 @@ module.exports = function(grunt) {
     			'dist/css/style.min.css': 'src/css/style.css'
     		}
     	}
-    }
+    },
+
+
+        // configure watch to auto update ------------------------------------------
+        watch: {
+          stylesheets: {
+            files: ['src/**/*.css', 'src/**/*.less'],
+            tasks: ['less', 'cssmin']
+          },
+          scripts: {
+            files: 'src/**/*.js',
+            tasks: ['jshint', 'uglify']
+          }
+        }
 
 
 });
@@ -69,16 +82,10 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
- // ========= // CREATE TASKS =========
-
-  // this default task will go through all configuration (dev and production) in each task 
+  // ===========================================================================
+  // CREATE TASKS ==============================================================
+  // ===========================================================================
   grunt.registerTask('default', ['jshint', 'uglify', 'cssmin', 'less']);
-
-  // this task will only run the dev configuration 
-  grunt.registerTask('dev', ['jshint:dev', 'uglify:dev', 'cssmin:dev', 'less:dev']);
-
-  // only run production configuration 
-  grunt.registerTask('production', ['jshint:production', 'uglify:production', 'cssmin:production', 'less:production']);
 
 
 };
